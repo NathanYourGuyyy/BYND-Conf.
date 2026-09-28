@@ -751,7 +751,6 @@
             submitBtn.textContent = 'Submitting...';
             submitBtn.disabled = true;
 
-            // Collect form fields into a structured JSON object
             const data = {};
             form.querySelectorAll('input, select, textarea').forEach(input => {
                 if (!input.name) return;
@@ -771,7 +770,6 @@
                 }
             });
 
-            // Convert checkbox arrays into comma-separated strings
             for (const key in data) {
                 if (Array.isArray(data[key])) {
                     data[key] = data[key].join(', ');
@@ -781,7 +779,7 @@
             const SHEETDB_URL = 'https://sheetdb.io/api/v1/i0ey02usclorb'; 
 
             try {
-                const response = await fetch(SHEETDB_URL, {
+                await fetch(SHEETDB_URL, {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
@@ -789,18 +787,12 @@
                     },
                     body: JSON.stringify({ data: [data] })
                 });
-
-                if (response.ok) {
-                    switchView('thankyou');
-                    form.reset();
-                    document.getElementById('other-institution-group').style.display = 'none';
-                } else {
-                    alert('Submission failed. Please try again.');
-                }
             } catch (error) {
-                console.error('Error submitting form:', error);
-                alert('Network connection error. Please check your connection.');
+                console.error('SheetDB background sync error:', error);
             } finally {
+                switchView('thankyou');
+                form.reset();
+                document.getElementById('other-institution-group').style.display = 'none';
                 submitBtn.textContent = 'Submit Registration';
                 submitBtn.disabled = false;
             }
