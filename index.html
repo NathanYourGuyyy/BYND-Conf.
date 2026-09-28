@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BYND Conf. Registration</title>
+    <style>
+        /* CSS Variables */
+        :root {
+            /* Core Register View Colors */
+            --background-color: #1a0933; 
+            --text-on-bg: #eae7e0; 
+            
+            /* About View Colors */
+            --about-bg: #fb2a96;
+            --text-on-about: #eae7e0;
+
+            /* Contact View Colors */
+            --contact-bg: #e7832d;
+            --text-on-contact: #eae7e0;
+
+            /* Form / Card Colors */
+            --form-bg: #ffffff;
+            --text-on-form: #111111; 
+
+            /* High-Contrast Retro Accents */
+            --accent-volt: #00FE6C;
+            --accent-magenta: #FF007F;
+            --accent-yellow: #FFD600;
+            
+            --border-radius: 16px;
+            --border-width: 3px;
+        }
+
+        /* Custom Font Setup optimized for mobile and desktop */
+        @font-face {
+            font-family: 'Farlot';
+            src: url('farlot.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* Reset and Global Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Farlot', system-ui, -apple-system, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-on-bg);
+            line-height: 1.7;
+            letter-spacing: 0.3px;
+            padding-bottom: 60px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Header / Navigation */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: var(--border-width) solid currentColor;
+            background-color: inherit;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container img {
+            height: 45px;
+            width: auto;
+            display: block;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            gap: 6px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: inherit;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: var(--border-width) solid transparent;
+            padding: 6px 12px;
+            border-radius: var(--border-radius);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        nav a:hover, nav a.active {
+            border-color: currentColor;
+            background-color: var(--accent-volt);
+            color: var(--text-on-form);
+        }
+
+        /* View Management */
+        .page-view {
+            display: none;
+        }
+
+        .page-view.active {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 2.4rem;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            line-height: 1.15;
+            letter-spacing: 0.5px;
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* About Page Container */
+        .about-container {
+            max-width: 900px;
+            margin: 20px 16px;
+            background-color: var(--about-bg);
+            color: var(--text-on-about);
+            border: var(--border-width) solid var(--text-on-about);
+            border-radius: var(--border-radius);
+            padding: 24px 20px;
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .about-header h2 {
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        .about-header p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .about-card {
+            border: var(--border-width) solid var(--text-on-about);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .about-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .about-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            color: var(--accent-yellow);
+            letter-spacing: 0.5px;
+        }
+
+        .about-card p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Contact Page Container */
+        .contact-container {
+            max-width: 700px;
+            margin: 20px 16px;
+            background-color: var(--contact-bg);
+            color: var(--text-on-contact);
+            border: var(--border-width) solid var(--text-on-contact);
+            border-radius: var(--border-radius);
+            padding: 24px 20px;
+            text-align: center;
+        }
+
+        .contact-container h2 {
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            color: var(--text-on-contact);
+            letter-spacing: 0.5px;
+        }
+
+        .contact-container p {
+            font-size: 1.05rem;
+            margin-bottom: 30px;
+            line-height: 1.7;
+            color: var(--text-on-contact);
+        }
+
+        .contact-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .contact-card {
+            border: var(--border-width) solid #111111;
+            border-radius: var(--border-radius);
+            padding: 16px 18px;
+            background-color: #eae7e0;
+            color: #111111;
+            font-size: 1rem;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: center;
+            text-align: center;
+            text-decoration: none;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .contact-card:active {
+            background-color: var(--accent-yellow);
+        }
+
+        .contact-card span:first-child {
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            color: #555555;
+            letter-spacing: 1px;
+        }
+
+        /* Form Container */
+        .form-container {
+            max-width: 700px;
+            margin: 0 16px 40px 16px;
+            background-color: var(--form-bg);
+            color: var(--text-on-form);
+            border: var(--border-width) solid var(--text-on-bg);
+            border-radius: var(--border-radius);
+            padding: 24px 20px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* Inputs & Textareas */
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            font-family: inherit;
+            background-color: var(--form-bg);
+            border: var(--border-width) solid var(--text-on-form);
+            border-radius: var(--border-radius);
+            color: var(--text-on-form);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            background-color: #fafafa;
+            border-color: var(--accent-magenta);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.5;
+        }
+
+        /* Hidden Other Institution Field */
+        #other-institution-group {
+            display: none;
+            margin-top: 12px;
+        }
+
+        /* Radio & Checkbox Groups */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            font-weight: normal;
+            font-size: 0.95rem;
+            cursor: pointer;
+            padding: 12px 14px;
+            border: var(--border-width) solid var(--text-on-form);
+            border-radius: var(--border-radius);
+            background-color: var(--form-bg);
+            line-height: 1.5;
+        }
+
+        .option-label:active {
+            background-color: var(--accent-yellow);
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border: var(--border-width) solid var(--text-on-form);
+            margin-right: 12px;
+            margin-top: 1px;
+            background-color: var(--form-bg);
+            display: inline-block;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        input[type="radio"] {
+            border-radius: 50%;
+        }
+
+        input[type="checkbox"] {
+            border-radius: 6px;
+        }
+
+        input[type="radio"]:checked,
+        input[type="checkbox"]:checked {
+            background-color: var(--accent-volt);
+        }
+
+        /* Submit Button */
+        button[type="submit"], .action-btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-on-form);
+            background-color: var(--accent-volt);
+            border: var(--border-width) solid var(--text-on-form);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s ease;
+        }
+
+        button[type="submit"]:active {
+            background-color: var(--accent-magenta);
+            color: var(--form-bg);
+        }
+
+        /* Desktop Adjustments */
+        @media (min-width: 768px) {
+            header {
+                padding: 24px 40px;
+            }
+            .logo-container img {
+                height: 60px;
+            }
+            nav {
+                gap: 12px;
+            }
+            nav a {
+                font-size: 1.1rem;
+                padding: 8px 16px;
+            }
+            .hero {
+                padding: 60px 20px;
+            }
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+            .hero p {
+                font-size: 1.25rem;
+            }
+            .about-container {
+                max-width: 900px;
+                margin: 40px auto;
+                padding: 50px;
+            }
+            .about-header h2 {
+                font-size: 3rem;
+            }
+            .about-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 24px;
+            }
+            .contact-container {
+                max-width: 700px;
+                margin: 40px auto;
+                padding: 50px;
+            }
+            .contact-container h2 {
+                font-size: 3rem;
+            }
+            .contact-cards {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .contact-card {
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 20px 30px;
+                text-align: left;
+            }
+            .contact-card span:first-child {
+                font-size: 0.9rem;
+            }
+            .form-container {
+                max-width: 700px;
+                margin: 0 auto 60px auto;
+                padding: 50px;
+            }
+            .option-label {
+                font-size: 1.05rem;
+                padding: 14px 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="site-header">
+        <div class="logo-container" onclick="switchView('register')">
+            <img src="BYND.svg" alt="BYND Conf Logo">
+        </div>
+        <nav>
+            <a id="nav-about" onclick="switchView('about')">About</a>
+            <a id="nav-contact" onclick="switchView('contact')">Contact Us</a>
+            <a id="nav-register" onclick="switchView('register')" class="active">Register</a>
+        </nav>
+    </header>
+
+    <!-- REGISTER / HOME VIEW -->
+    <div id="view-register" class="page-view active">
+        <section class="hero">
+            <h1>Welcome to BYND Conf.</h1>
+            <p>Ready to go beyond? Register below to secure your spot and connect with a community of creators, leaders, and entrepreneurs.</p>
+        </section>
+
+        <main class="form-container">
+            <!-- Replace action="#" with your Formspree endpoint url e.g. action="https://formspree.io/f/your_id" -->
+            <form action="#" method="POST">
+                
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number (Preferably WhatsApp)</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="institution">Institution</label>
+                    <select id="institution" name="institution" required onchange="handleInstitutionChange(this)">
+                        <option value="" disabled selected>Select your institution...</option>
+                        <option value="Bowen University">Bowen University</option>
+                        <option value="Lautech">Lautech</option>
+                        <option value="UI">UI</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    
+                    <div id="other-institution-group">
+                        <input type="text" id="other-institution" name="other_institution" placeholder="Please type your institution name...">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Which of the following best describes you?</label>
+                    <div class="options-grid">
+                        <label class="option-label">
+                            <input type="radio" name="description" value="Creative" required> Creative/aspiring
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="description" value="Entrepreneur"> Entrepreneur/aspiring
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="description" value="Leader"> Leader/aspiring
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="building">What are you currently building or interested in?</label>
+                    <input type="text" id="building" name="building" placeholder="E.g graphic design, business, leadership, photography, etc.">
+                </div>
+
+                <div class="form-group">
+                    <label>Which of these best describes where you currently are in your journey? (Select all that apply)</label>
+                    <div class="options-grid">
+                        <label class="option-label"><input type="checkbox" name="journey" value="idea"> I have an idea but don't know where to start.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="started"> I have started but don't know how to move forward.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="skills"> I have skills but don't know how to position myself.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="confidence"> I struggle with confidence and putting myself out there.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="network"> I want to build meaningful connections and expand my network.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="clarity"> I am looking for clarity and direction.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="limited"> I feel limited by my current circumstances.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="purpose"> I want to discover and better understand my purpose.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="gifts"> I want to learn how to use my gifts and abilities intentionally.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="leverage"> I want to learn how to turn my limitations into leverage.</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>What area do you most want to grow in? (Select all that apply)</label>
+                    <div class="options-grid">
+                        <label class="option-label"><input type="checkbox" name="growth" value="Confidence"> Confidence</label>
+                        <label class="option-label"><input type="checkbox" name="growth" value="Networking"> Networking and connecting</label>
+                        <label class="option-label"><input type="checkbox" name="growth" value="Personal branding"> Personal branding & positioning</label>
+                        <label class="option-label"><input type="checkbox" name="growth" value="Creativity"> Creativity and skill development</label>
+                        <label class="option-label"><input type="checkbox" name="growth" value="Entrepreneurship"> Entrepreneurship</label>
+                        <label class="option-label"><input type="checkbox" name="growth" value="Leadership"> Leadership</label>
+                        <label class="option-label"><input type="checkbox" name="growth" value="Purpose"> Purpose and direction</label>
+                        <label class="option-label"><input type="checkbox" name="growth" value="Clarity"> Clarity</label>
+                        <label class="option-label"><input type="checkbox" name="growth" value="Communication"> Communication and public speaking</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Would you be interested in connecting with other attendees before or after the conference?</label>
+                    <div class="options-grid">
+                        <label class="option-label">
+                            <input type="radio" name="connecting" value="Before" required> Before
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="connecting" value="After"> After
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="gobeyond">Complete this sentence - I am ready to Go Beyond...</label>
+                    <textarea id="gobeyond" name="gobeyond" placeholder="Your answer here..."></textarea>
+                </div>
+
+                <button type="submit">Submit Registration</button>
+                
+            </form>
+        </main>
+    </div>
+
+    <!-- ABOUT VIEW -->
+    <div id="view-about" class="page-view">
+        <div class="about-container">
+            <div class="about-header">
+                <h2>About BYND</h2>
+                <p>BYND is a conference designed to inspire and equip student creatives, young entrepreneurs, emerging leaders, and young professionals to look beyond their perceived limitations, turn their challenges into leverage, and confidently step up toward becoming who they are capable of becoming.</p>
+            </div>
+
+            <p style="text-align: center; font-size: 1.05rem; margin-bottom: 30px; line-height: 1.8;">
+                Through meaningful conversations, practical knowledge, intentional networking, and opportunities for growth, BYND seeks to help participants discover their potential, develop the confidence to take action, build meaningful connections, and become intentional about their journey. Ultimately, BYND is about raising a generation of purpose-driven individuals who understand that their gifts and abilities are not without purpose, but are tools to be stewarded intentionally and used to make a meaningful impact and, above all, make Christ known.
+            </p>
+
+            <div class="about-grid">
+                <div class="about-card full-width">
+                    <h3>Core Statement</h3>
+                    <p>BYND is built on the belief that where you are is not the limit of where you can go. Your limitations do not have to define your future; they can become leverage for growth. You can step beyond fear, self-doubt, lack of knowledge, and perceived limitations to become who you are capable of becoming. But becoming more is not the end goal. The goal is to become purpose-driven—to understand why you have been given your gifts, skills, influence, and opportunities, and to use them intentionally to make an impact and ultimately make Christ known.</p>
+                </div>
+
+                <div class="about-card">
+                    <h3>Vision</h3>
+                    <p>To inspire and empower a generation of student creatives, young entrepreneurs, emerging leaders, and young professionals to look beyond their limitations, discover and maximize their potential, confidently step into who they are capable of becoming, and live purpose-driven lives that make a meaningful impact and make Christ known.</p>
+                </div>
+
+                <div class="about-card">
+                    <h3>Mission</h3>
+                    <p>To create a transformative platform that equips young people with the knowledge, confidence, connections, and practical tools needed to turn limitations into leverage, step beyond fear and self-doubt, embrace opportunities, and grow into the people they are capable of becoming—while encouraging them to discover their purpose and intentionally use their gifts, skills, influence, and success to make a meaningful impact and advance the Kingdom of God.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 35px; text-align: center;">
+                <button type="button" class="action-btn" onclick="switchView('register')" style="width: auto; padding: 14px 30px; background-color: var(--accent-volt); color: var(--text-on-form);">
+                    Register For BYND Conf.
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACT US VIEW -->
+    <div id="view-contact" class="page-view">
+        <div class="contact-container">
+            <h2>Contact Us</h2>
+            <p>Have questions or want to reach out to the team? Get in touch with us through any of the channels below.</p>
+
+            <div class="contact-cards">
+                <a href="mailto:beyond202601@gmail.com" class="contact-card">
+                    <span>Email</span>
+                    <span>beyond202601@gmail.com</span>
+                </a>
+                <a href="tel:09054943239" class="contact-card">
+                    <span>Phone</span>
+                    <span>09054943239</span>
+                </a>
+                <a href="https://instagram.com/beyond.1.0" target="_blank" rel="noopener noreferrer" class="contact-card">
+                    <span>Instagram</span>
+                    <span>@beyond.1.0</span>
+                </a>
+            </div>
+
+            <div style="margin-top: 35px;">
+                <button type="button" onclick="switchView('register')" style="width: auto; padding: 14px 30px; font-size: 1rem; background-color: #eae7e0; color: #111111; border: var(--border-width) solid #111111; border-radius: var(--border-radius); cursor: pointer; text-transform: uppercase; font-family: inherit; font-weight: bold; letter-spacing: 1px;">
+                    Back To Registration Form
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchView(viewName) {
+            document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
+            
+            const body = document.body;
+
+            if (viewName === 'about') {
+                document.getElementById('view-about').classList.add('active');
+                document.getElementById('nav-about').classList.add('active');
+                body.style.backgroundColor = 'var(--about-bg)';
+                body.style.color = 'var(--text-on-about)';
+            } else if (viewName === 'contact') {
+                document.getElementById('view-contact').classList.add('active');
+                document.getElementById('nav-contact').classList.add('active');
+                body.style.backgroundColor = 'var(--contact-bg)';
+                body.style.color = 'var(--text-on-contact)';
+            } else {
+                document.getElementById('view-register').classList.add('active');
+                document.getElementById('nav-register').classList.add('active');
+                body.style.backgroundColor = 'var(--background-color)';
+                body.style.color = 'var(--text-on-bg)';
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleInstitutionChange(selectEl) {
+            const otherGroup = document.getElementById('other-institution-group');
+            const otherInput = document.getElementById('other-institution');
+            if (selectEl.value === 'Other') {
+                otherGroup.style.display = 'block';
+                otherInput.setAttribute('required', 'true');
+            } else {
+                otherGroup.style.display = 'none';
+                otherInput.removeAttribute('required');
+                otherInput.value = '';
+            }
+        }
+    </script>
+</body>
+</html>
