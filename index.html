@@ -751,24 +751,55 @@
             submitBtn.textContent = 'Submitting...';
             submitBtn.disabled = true;
 
-            const formData = new FormData(form);
+            // Collect form fields into a structured JSON object
+            const data = {};
+            form.querySelectorAll('input, select, textarea').forEach(input => {
+                if (!input.name) return;
+                if (input.type === 'checkbox') {
+                    if (!data[input.name]) {
+                        data[input.name] = [];
+                    }
+                    if (input.checked) {
+                        data[input.name].push(input.value);
+                    }
+                } else if (input.type === 'radio') {
+                    if (input.checked) {
+                        data[input.name] = input.value;
+                    }
+                } else {
+                    data[input.name] = input.value;
+                }
+            });
+
+            // Convert checkbox arrays into comma-separated strings
+            for (const key in data) {
+                if (Array.isArray(data[key])) {
+                    data[key] = data[key].join(', ');
+                }
+            }
+
             const SHEETDB_URL = 'https://sheetdb.io/api/v1/i0ey02usclorb'; 
 
             try {
-                if (SHEETDB_URL !== 'YOUR_SHEETDB_API_URL') {
-                    await fetch(SHEETDB_URL, {
-                        method: 'POST',
-                        body: formData
-                    });
-                }
+                const response = await fetch(SHEETDB_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ data: [data] })
+                });
 
-                switchView('thankyou');
-                form.reset();
-                document.getElementById('other-institution-group').style.display = 'none';
+                if (response.ok) {
+                    switchView('thankyou');
+                    form.reset();
+                    document.getElementById('other-institution-group').style.display = 'none';
+                } else {
+                    alert('Submission failed. Please try again.');
+                }
             } catch (error) {
                 console.error('Error submitting form:', error);
-                switchView('thankyou');
-                form.reset();
+                alert('Network connection error. Please check your connection.');
             } finally {
                 submitBtn.textContent = 'Submit Registration';
                 submitBtn.disabled = false;
