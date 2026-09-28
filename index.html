@@ -19,6 +19,10 @@
             --contact-bg: #e7832d;
             --text-on-contact: #eae7e0;
 
+            /* Thank You View Colors */
+            --thankyou-bg: #00FE6C;
+            --text-on-thankyou: #111111;
+
             /* Form / Card Colors */
             --form-bg: #ffffff;
             --text-on-form: #111111; 
@@ -258,6 +262,31 @@
             letter-spacing: 1px;
         }
 
+        /* Thank You Page Container */
+        .thankyou-container {
+            max-width: 600px;
+            margin: 60px 16px;
+            background-color: var(--thankyou-bg);
+            color: var(--text-on-thankyou);
+            border: var(--border-width) solid var(--text-on-thankyou);
+            border-radius: var(--border-radius);
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .thankyou-container h2 {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .thankyou-container p {
+            font-size: 1.15rem;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
         /* Form Container */
         .form-container {
             max-width: 700px;
@@ -448,6 +477,11 @@
             .contact-card span:first-child {
                 font-size: 0.9rem;
             }
+            .thankyou-container {
+                max-width: 700px;
+                margin: 80px auto;
+                padding: 60px 40px;
+            }
             .form-container {
                 max-width: 700px;
                 margin: 0 auto 60px auto;
@@ -481,8 +515,8 @@
         </section>
 
         <main class="form-container">
-            <!-- Replace action="#" with your Formspree endpoint url e.g. action="https://formspree.io/f/your_id" -->
-            <form action="#" method="POST">
+            <!-- If using Formspree, update action="https://formspree.io/f/your_id" -->
+            <form id="registration-form" action="#" method="POST" onsubmit="handleFormSubmit(event)">
                 
                 <div class="form-group">
                     <label for="name">Name</label>
@@ -654,6 +688,18 @@
         </div>
     </div>
 
+    <!-- THANK YOU VIEW -->
+    <div id="view-thankyou" class="page-view">
+        <div class="thankyou-container">
+            <h2>Thank You For Registering!</h2>
+            <p>Your response has been successfully recorded. We are thrilled to have you join us at BYND Conf. Get ready to go beyond your limits!</p>
+
+            <button type="button" onclick="switchView('register')" style="width: auto; padding: 16px 36px; font-size: 1.1rem; background-color: #ffffff; color: #111111; border: var(--border-width) solid #111111; border-radius: var(--border-radius); cursor: pointer; text-transform: uppercase; font-family: inherit; font-weight: bold; letter-spacing: 1px;">
+                Back To Home
+            </button>
+        </div>
+    </div>
+
     <script>
         function switchView(viewName) {
             document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active'));
@@ -671,6 +717,10 @@
                 document.getElementById('nav-contact').classList.add('active');
                 body.style.backgroundColor = 'var(--contact-bg)';
                 body.style.color = 'var(--text-on-contact)';
+            } else if (viewName === 'thankyou') {
+                document.getElementById('view-thankyou').classList.add('active');
+                body.style.backgroundColor = 'var(--thankyou-bg)';
+                body.style.color = 'var(--text-on-thankyou)';
             } else {
                 document.getElementById('view-register').classList.add('active');
                 document.getElementById('nav-register').classList.add('active');
@@ -691,6 +741,13 @@
                 otherInput.removeAttribute('required');
                 otherInput.value = '';
             }
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            switchView('thankyou');
+            event.target.reset();
+            document.getElementById('other-institution-group').style.display = 'none';
         }
     </script>
 </body>
