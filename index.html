@@ -759,7 +759,7 @@
 
             try {
                 // If you haven't set up SheetDB yet, this fallback allows the Thank You page to show smoothly anyway
-                if (SHEETDB_URL !== 'https://sheetdb.io/api/v1/i0ey02usc1orb') {
+                if (SHEETDB_URL !== 'YOUR_SHEETDB_API_URL') {
                     await fetch(SHEETDB_URL, {
                         method: 'POST',
                         body: formData
