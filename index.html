@@ -515,8 +515,7 @@
         </section>
 
         <main class="form-container">
-            <!-- If using Formspree, update action="https://formspree.io/f/your_id" -->
-            <form id="registration-form" action="#" method="POST" onsubmit="handleFormSubmit(event)">
+            <form id="registration-form" onsubmit="handleFormSubmit(event)">
                 
                 <div class="form-group">
                     <label for="name">Name</label>
@@ -571,16 +570,16 @@
                 <div class="form-group">
                     <label>Which of these best describes where you currently are in your journey? (Select all that apply)</label>
                     <div class="options-grid">
-                        <label class="option-label"><input type="checkbox" name="journey" value="idea"> I have an idea but don't know where to start.</label>
-                        <label class="option-label"><input type="checkbox" name="journey" value="started"> I have started but don't know how to move forward.</label>
-                        <label class="option-label"><input type="checkbox" name="journey" value="skills"> I have skills but don't know how to position myself.</label>
-                        <label class="option-label"><input type="checkbox" name="journey" value="confidence"> I struggle with confidence and putting myself out there.</label>
-                        <label class="option-label"><input type="checkbox" name="journey" value="network"> I want to build meaningful connections and expand my network.</label>
-                        <label class="option-label"><input type="checkbox" name="journey" value="clarity"> I am looking for clarity and direction.</label>
-                        <label class="option-label"><input type="checkbox" name="journey" value="limited"> I feel limited by my current circumstances.</label>
-                        <label class="option-label"><input type="checkbox" name="journey" value="purpose"> I want to discover and better understand my purpose.</label>
-                        <label class="option-label"><input type="checkbox" name="journey" value="gifts"> I want to learn how to use my gifts and abilities intentionally.</label>
-                        <label class="option-label"><input type="checkbox" name="journey" value="leverage"> I want to learn how to turn my limitations into leverage.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="I have an idea but don't know where to start."> I have an idea but don't know where to start.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="I have started but don't know how to move forward."> I have started but don't know how to move forward.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="I have skills but don't know how to position myself."> I have skills but don't know how to position myself.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="I struggle with confidence and putting myself out there."> I struggle with confidence and putting myself out there.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="I want to build meaningful connections and expand my network."> I want to build meaningful connections and expand my network.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="I am looking for clarity and direction."> I am looking for clarity and direction.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="I feel limited by my current circumstances."> I feel limited by my current circumstances.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="I want to discover and better understand my purpose."> I want to discover and better understand my purpose.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="I want to learn how to use my gifts and abilities intentionally."> I want to learn how to use my gifts and abilities intentionally.</label>
+                        <label class="option-label"><input type="checkbox" name="journey" value="I want to learn how to turn my limitations into leverage."> I want to learn how to turn my limitations into leverage.</label>
                     </div>
                 </div>
 
@@ -588,14 +587,14 @@
                     <label>What area do you most want to grow in? (Select all that apply)</label>
                     <div class="options-grid">
                         <label class="option-label"><input type="checkbox" name="growth" value="Confidence"> Confidence</label>
-                        <label class="option-label"><input type="checkbox" name="growth" value="Networking"> Networking and connecting</label>
-                        <label class="option-label"><input type="checkbox" name="growth" value="Personal branding"> Personal branding & positioning</label>
-                        <label class="option-label"><input type="checkbox" name="growth" value="Creativity"> Creativity and skill development</label>
+                        <label class="option-label"><input type="checkbox" name="growth" value="Networking and connecting"> Networking and connecting</label>
+                        <label class="option-label"><input type="checkbox" name="growth" value="Personal branding & positioning"> Personal branding & positioning</label>
+                        <label class="option-label"><input type="checkbox" name="growth" value="Creativity and skill development"> Creativity and skill development</label>
                         <label class="option-label"><input type="checkbox" name="growth" value="Entrepreneurship"> Entrepreneurship</label>
                         <label class="option-label"><input type="checkbox" name="growth" value="Leadership"> Leadership</label>
-                        <label class="option-label"><input type="checkbox" name="growth" value="Purpose"> Purpose and direction</label>
+                        <label class="option-label"><input type="checkbox" name="growth" value="Purpose and direction"> Purpose and direction</label>
                         <label class="option-label"><input type="checkbox" name="growth" value="Clarity"> Clarity</label>
-                        <label class="option-label"><input type="checkbox" name="growth" value="Communication"> Communication and public speaking</label>
+                        <label class="option-label"><input type="checkbox" name="growth" value="Communication and public speaking"> Communication and public speaking</label>
                     </div>
                 </div>
 
@@ -616,7 +615,7 @@
                     <textarea id="gobeyond" name="gobeyond" placeholder="Your answer here..."></textarea>
                 </div>
 
-                <button type="submit">Submit Registration</button>
+                <button type="submit" id="submit-btn">Submit Registration</button>
                 
             </form>
         </main>
@@ -743,11 +742,42 @@
             }
         }
 
-        function handleFormSubmit(event) {
+        async function handleFormSubmit(event) {
             event.preventDefault();
-            switchView('thankyou');
-            event.target.reset();
-            document.getElementById('other-institution-group').style.display = 'none';
+            const form = event.target;
+            const submitBtn = document.getElementById('submit-btn');
+            
+            submitBtn.textContent = 'Submitting...';
+            submitBtn.disabled = true;
+
+            // Gather checkbox selections into comma-separated strings
+            const formData = new FormData(form);
+            
+            // Handle multiple checkboxes manually if needed, or send JSON/FormData directly to SheetDB endpoint:
+            // Replace 'YOUR_SHEETDB_API_URL' with your actual SheetDB API link from sheetdb.io linked to your Google Sheet
+            const SHEETDB_URL = 'YOUR_SHEETDB_API_URL'; 
+
+            try {
+                // If you haven't set up SheetDB yet, this fallback allows the Thank You page to show smoothly anyway
+                if (SHEETDB_URL !== 'https://sheetdb.io/api/v1/i0ey02usc1orb') {
+                    await fetch(SHEETDB_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                }
+
+                switchView('thankyou');
+                form.reset();
+                document.getElementById('other-institution-group').style.display = 'none';
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                // Still show thank you view to prevent user frustration, or alert
+                switchView('thankyou');
+                form.reset();
+            } finally {
+                submitBtn.textContent = 'Submit Registration';
+                submitBtn.disabled = false;
+            }
         }
     </script>
 </body>
