@@ -700,8 +700,24 @@
         </div>
     </div>
 
-    <script>
-        function switchView(viewName) {
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDZl6uFuEL1iKb9CXZQqZaOwv1gyd5FtnY",
+            authDomain: "bynd-conf.firebaseapp.com",
+            projectId: "bynd-conf",
+            storageBucket: "bynd-conf.firebasestorage.app",
+            messagingSenderId: "999487780376",
+            appId: "1:999487780376:web:385b2836e2807502a1b56d",
+            measurementId: "G-N9QJB50LWB"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.switchView = function(viewName) {
             document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
             
@@ -730,7 +746,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function handleInstitutionChange(selectEl) {
+        window.handleInstitutionChange = function(selectEl) {
             const otherGroup = document.getElementById('other-institution-group');
             const otherInput = document.getElementById('other-institution');
             if (selectEl.value === 'Other') {
@@ -743,7 +759,7 @@
             }
         }
 
-        async function handleFormSubmit(event) {
+        window.handleFormSubmit = async function(event) {
             event.preventDefault();
             const form = event.target;
             const submitBtn = document.getElementById('submit-btn');
@@ -751,20 +767,14 @@
             submitBtn.textContent = 'Submitting...';
             submitBtn.disabled = true;
 
-            const data = {};
+            const data = { timestamp: new Date().toISOString() };
             form.querySelectorAll('input, select, textarea').forEach(input => {
                 if (!input.name) return;
                 if (input.type === 'checkbox') {
-                    if (!data[input.name]) {
-                        data[input.name] = [];
-                    }
-                    if (input.checked) {
-                        data[input.name].push(input.value);
-                    }
+                    if (!data[input.name]) data[input.name] = [];
+                    if (input.checked) data[input.name].push(input.value);
                 } else if (input.type === 'radio') {
-                    if (input.checked) {
-                        data[input.name] = input.value;
-                    }
+                    if (input.checked) data[input.name] = input.value;
                 } else {
                     data[input.name] = input.value;
                 }
@@ -776,21 +786,12 @@
                 }
             }
 
-            const SHEETDB_URL = 'https://sheetdb.io/api/v1/i0ey02usclorb'; 
-
             try {
-                await fetch(SHEETDB_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ data: [data] })
-                });
+                await addDoc(collection(db, "registrations"), data);
             } catch (error) {
-                console.error('SheetDB background sync error:', error);
+                console.error('Firebase submission error:', error);
             } finally {
-                switchView('thankyou');
+                window.switchView('thankyou');
                 form.reset();
                 document.getElementById('other-institution-group').style.display = 'none';
                 submitBtn.textContent = 'Submit Registration';
